@@ -1,0 +1,106 @@
+@charset "utf-8";
+* {
+    margin: 0;
+    padding: 0;
+}
+/*引入字体图标*/
+@font-face {font-family: "iconfont";
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot'); /* IE9*/
+  src: url('iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+/*表单样式设置*/
+#demo {
+    display: block;
+    width: 600px;
+    min-height: 300px;
+    background: #fff;
+    box-shadow: 0 4px 20px 0 #ddd;
+    margin: 0 auto;
+    margin-top: 30px;
+    padding: 20px;
+    font-size: 16px;
+    font-family: '微软雅黑';
+    line-height: 50px;
+}
+p .tip {
+    display: inline-block;
+    width: 100px;
+    margin-right: 15px;
+    text-align: right;
+    float: left;
+}
+input[type="text"],input[type="password"] {
+    outline: none;
+    width: 200px;
+    height: 32px;
+    line-height: 32px;
+    border: 1px solid #eee;
+    background: #fff;
+    border-radius: 3px;
+    text-indent: 15px;
+    font-size: 16px;
+    font-family: '微软雅黑 ';
+}
+input[type="radio"],input[type="checkbox"]{
+    display: inline-block;
+    outline: none;
+    width: 16px;
+    height: 16px;
+    float: left;
+    margin-top: 17px;
+    margin-right: 3px;
+    cursor: pointer;
+}
+.radioSpan,.checkboxSpan {
+    float: left;
+    display: inline-block;
+    width: 50px;
+}
+button {
+    display: inline-block;
+    border: none;
+    outline: none;
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    background: #73d66e;
+    border: 1px solid #96d293;
+    line-height: 40px;
+    margin-left: 115px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+}
+/*设置默认的错误提示的样式*/
+.prompot {
+    margin-left: 115px;
+    max-width: 485px;
+    clear: both;
+}
+.false {
+    color: red;
+}
+.right {
+    color: green;
+}
+input.false {
+    border: 1px solid red;
+}
+
+
+input.right {
+    border: 1px solid green;
+}
+}

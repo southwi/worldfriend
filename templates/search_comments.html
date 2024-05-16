@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>查询朋友圈</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}">
+</head>
+
+<body>
+    <h1>查询朋友圈</h1>
+    <form id="search-form">
+        <input type="text" id="search-query" placeholder="请输入用户ID或评论ID" />
+        <button type="submit">查询</button>
+    </form>
+
+    <table id="results">
+        <thead>
+            <tr>
+                <th>userID</th>
+                <th>textID</th>
+                <th>essayID</th>
+                <th>text</th>
+                <th>saytime</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 查询结果将插入到这里 -->
+        </tbody>
+    </table>
+
+    <script>
+        const form = document.getElementById('search-form');
+        const queryInput = document.getElementById('search-query');
+        const resultsTableBody = document.querySelector('#results tbody');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const query2 = queryInput.value.trim();
+
+            if (query2) {
+                // 发送 AJAX 请求到后端
+                const response = await fetch(`/search_comments/?query2=${query2}`);
+                const data = await response.json();
+
+                // 清空结果表格
+                resultsTableBody.innerHTML = '';
+
+                // 插入查询结果
+                data.forEach((comments) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${comments.userid}</td>
+                        <td>${comments.textid}</td>
+                        <td>${comments.essayid}</td>
+                        <td>${comments.text}</td>
+                        <td>${comments.saytime}</td>
+                    `;
+                    resultsTableBody.appendChild(row);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

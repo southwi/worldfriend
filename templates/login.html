@@ -1,0 +1,275 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>朋友圈-用户登录</title>
+    <style>
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0) inset; /* 背景色设置为白色 */
+        }
+        .messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: black;
+        }
+        .error-message {
+            color: red;
+            font-size: 16px;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .cavs{
+            z-index:1;
+            position: fixed;
+            width:95%;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        
+        html,body{
+            width: 100%;
+            height: 100%;
+            background: url("../static/img/bg1.jpg") no-repeat;
+            background-size: 100% 100%;
+        }
+        
+        
+        
+        .loginmain{
+            background: rgba(0, 0, 0, 0.5);
+            width: 540px;
+            height: 300px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            padding: 100px 40px 40px 40px;
+            box-shadow: -15px 15px 15px rgba(6, 17, 47, 0.7);
+            z-index: 99999;
+        }
+        .login-title{
+            color: #D3D7F7;
+            height: 60px;
+            font-size:20px;
+            text-align: center;
+            margin-top: -20px;
+        }
+        .login-con{
+            height: 208px;
+            position: absolute;
+            left: 0;
+            width: 80%;
+            margin:0 10%;
+        }
+        .login-user{
+            position: relative;
+        }
+        .icon{
+            position: absolute;
+            z-index: 1;
+            left: 36px;
+            top: 8px;
+            opacity: 1;
+        }
+        .login-con input{
+            width: calc(100% - 130px);
+            margin-top: -2px;
+            background: rgba(57, 61, 82, 0);
+            left: 0;
+            padding: 10px 65px;
+            border-top: 2px solid rgba(57, 61, 82, 0);
+            border-bottom: 2px solid rgba(57, 61, 82, 0);
+            border-right: none;
+            border-left: none;
+            outline: none;
+            font-family: 'Gudea', sans-serif;
+            box-shadow: none;
+            color: #61BFFF !important;
+        }
+        .login-pwd, .login-yan{
+            position: relative;
+        }
+        /*
+        .login-pwd .icon{
+            position: absolute;
+            z-index: 1;
+            left: 36px;
+            top: 8px;
+            opacity: .5;
+        }*/
+        .login-btn{
+            width: 80%;
+            margin: 0 auto;
+            position: relative;
+        }
+        .login-btn input{
+            border-radius: 3px;
+            background: transparent;
+            border: 2px solid #4FA1D9;
+            color: #4FA1D9;
+            text-transform: uppercase;
+            font-size: 11px;
+            cursor: pointer;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            right: 0;
+        
+            margin: auto;
+            width: 80%;
+            transition-property: background,color;
+            -webkit-transition-duration: .2s;
+            transition-duration: .2s;
+        }
+        .weui-cell__bd {
+            position: relative;
+        }
+        
+        .weui-input {
+            width: 50%; /* 输入框宽度为右半部分 */
+            z-index: 1; /* 确保输入框在验证码图片上方 */
+        }
+        
+        .weui-vcode-img {
+            position: absolute;
+            top: 0;
+            right: 30%;
+            height: 100%; /* 验证码图片高度与输入框相同 */
+            z-index: 0; /* 确保验证码图片在输入框下方 */
+        }
+        .login-btn input:hover{
+            color: white !important;
+            background: #4FA1D9;
+            cursor: pointer;
+            -webkit-transition-property: background,color;
+            transition-property: background,color;
+            -webkit-transition-duration: .2s;
+            transition-duration: .2s;
+        }
+    </style>
+</head>
+<body>
+<canvas class="cavs" width="1575" height="1337"></canvas>
+
+<div class="loginmain">
+    <div class="login-title">
+        <span>用户登录</span>
+    </div>
+    <!--
+    <div class="login-con">
+        <form method="post" action="">
+
+            <div class="login-user">
+                <div class="icon">
+                    <img src="" alt="user_lock">
+                </div>
+                <input type="text" name="name" class="name" placeholder="用户名" autocomplete="off" value="">
+            </div>
+            <div class="login-pwd">
+    
+                <div class="icon">
+                    <img src="" alt="pwd_lock">
+                </div>
+                <input type="password" name="pwd" class="pwd" placeholder="密码" autocomplete="off" value="">
+            </div>
+            <div class="login-yan">
+                <div class="icon">
+                    <img src="" alt="">
+                </div>
+                <input type="text" name="code" placeholder="验证码" autocomplete="off" value="">
+            </div>
+            <div class="login-btn">
+                <input type="submit" value="登录">
+            </div>
+        </form>
+    </div>-->
+<div class="login-con">
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="login-user">
+                <div class="icon">
+                    <img src="{% static 'img/user_icon_copy.png' %}" alt="user_lock">
+                </div>
+                <input type="text" name="name" class="name" placeholder="用户名" autocomplete="off" value="">
+            </div><!--admin-->
+            <div class="login-pwd">
+                <div class="icon">
+                    <img src="{% static 'img/lock_icon_copy.png' %}" alt="pwd_lock">
+                </div>
+                <input type="password" name="pwd" class="pwd" placeholder="密码" autocomplete="off" value="">
+            </div><!--password-->
+            <div class="login-yan"><!--验证码-->
+                <div class="icon">
+                    <img src="{% static 'img/key.png' %}" alt="">
+                </div>
+                <div class="weui-cell weui-cell_vcode">
+
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" placeholder="请输入验证码" type="text" id="captcha_1" name="vcode" required>
+                        <input name="hashkey" type="hidden" value="{{hashkey}}" id="captcha_hashkey">
+                    </div>
+                    <div class="weui-cell__ft">
+                        <img id="code" class="weui-vcode-img" src="{{ imgage_url }}" width="80" height="30" alt="点击刷新" onclick="refreshCaptcha()">
+                    </div>
+                </div>
+                {% if login_form.captcha.errors %}
+                    <div class="alert alert-warning">{{ login_form.captcha.errors }}</div>
+                {% elif message %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endif %}
+                <div class="form-group">
+                  {{ login_form.captcha.label_tag }}
+                  {{ login_form.captcha }}
+                </div>
+            </div>
+            <div class="login-btn">
+                <input type="submit" value="登录">
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li class="error-message">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+            </div> <!--send messages-->
+        </form>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    function refreshCaptcha() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // 解析 JSON 数据并更新验证码图片的链接和 hashkey 的值
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById('code').src = response.image_url;
+                    document.getElementById('captcha_hashkey').value = response.hashkey;
+                } else {
+                    console.error('Failed to refresh captcha');
+                }
+            }
+        };
+        // 发送 GET 请求到获取新验证码图片和 hashkey 的 URL
+        xhr.open('GET', '/refresh_captcha/', true);
+        xhr.send();
+    }
+</script>
+
+<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="{% static 'js/ban.js' %}"></script>

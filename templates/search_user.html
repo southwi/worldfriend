@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>查询用户</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}">
+</head>
+
+<body>
+    <h1>查询用户</h1>
+    <form id="search-form" method="post">
+        {% csrf_token %}
+        <input type="text" id="search-query" name="search-form" placeholder="请输入用户ID或name" />
+        <button type="submit">查询</button>
+    </form>
+
+    <table id="results">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>签名</th>
+                <th>头像</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 查询结果将插入到这里 -->
+        </tbody>
+    </table>
+    <script>
+        const form = document.getElementById('search-form');
+        const queryInput = document.getElementById('search-query');
+        const resultsTableBody = document.querySelector('#results tbody');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const query = queryInput.value.trim();
+
+            if (query) {
+                // 发送 AJAX 请求到后端
+                const response = await fetch(`/search_user/?query=${query}`);
+                const data = await response.json();
+
+                // 清空结果表格
+                resultsTableBody.innerHTML = '';
+
+                // 插入查询结果
+                data.forEach((user) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.signature}</td>
+                        <td><img src="{% static 'img/' %}${user.avatar}" alt="${user.name}" width="50" /></td>
+                    `;
+                    resultsTableBody.appendChild(row);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

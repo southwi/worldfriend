@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend World</title>
+</head>
+<body>
+    <h1>我的 Friend World</h1>
+    
+    {% for friendworld_post in friendworld_posts %}
+    <div>
+        <h3>{{ friendworld_post.user.username }}</h3>
+        <p>{{ friendworld_post.content }}</p>
+        <p>{{ friendworld_post.timestamp }}</p>
+        
+        <!-- 显示评论 -->
+        {% for comment in friendworld_post.friendworldcomment_set.all %}
+        <div>
+            <p>{{ comment.user.username }} 说：{{ comment.content }}</p>
+        </div>
+        {% endfor %}
+        
+        <!-- 添加评论表单 -->
+        <form method="post" action="{% url 'add_comment' friendworld_post.id %}">
+            {% csrf_token %}
+            <input type="text" name="comment_content">
+            <button type="submit">发表评论</button>
+        </form>
+    </div>
+    {% endfor %}
+</body>
+</html>

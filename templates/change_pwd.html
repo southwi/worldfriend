@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8">
+    <title>修改密码</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/validate-1.14.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/demo.js' %}"></script>
+    <style>
+        .messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: blue; font-family: Arial, sans-serif; text-align: center; margin-top: 20px">Change Password</h1>
+    {% csrf_token %}
+    <form id="demo" autocomplete="off" method="post">
+        {% csrf_token %}
+        <p>
+            <label for="password1" class="tip">当前密码：</label>
+            <input type="password" id="password1" name="password1" required>
+        </p>
+        <p class="prompot"><i class="iconfont"></i></p>
+        <p>
+            <label for="password" class="tip">新密码：</label>
+            <input type="password" name="password" id="password">
+        </p>
+        <p class="prompot"><i class="iconfont"></i></p>
+        <p>
+            <span class="tip">确认密码：</span>
+            <input type="password" name="password2">
+        </p>
+        <p class="prompot"><i class="iconfont"></i></p>
+        <button>确认</button>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </form>
+</body>
+</html>

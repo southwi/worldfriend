@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8">
+    <title>添加用户</title>
+    <style>
+        .messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: black;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/validate-1.14.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/demo.js' %}"></script>
+</head>
+<body>
+    <h1 style="color: blue; font-family: Arial, sans-serif; text-align: center; margin-top: 20px">Add User</h1>
+<form id="demo" autocomplete="off" method="post">
+    {% csrf_token %}
+    <p>
+        <label for="id" class="tip">*ID：</label>
+        <input type="text" id="id" name="id" required>
+    </p>
+    <p class="prompot"><i class="iconfont"></i></p>
+    <p>
+        <label for="username" class="tip">*用户名：</label>
+        <input type="text" id="username" name="username">
+    </p>
+    <p class="prompot"><i class="iconfont"></i></p>
+    <p>
+        <label for="password" class="tip">*密码：</label>
+        <input type="password" name="password" id="password">
+    </p>
+    <p class="prompot"><i class="iconfont"></i></p>
+    <p>
+        <span class="tip">*确认密码：</span>
+        <input type="password" name="password2">
+    </p>
+    <p class="prompot"><i class="iconfont"></i></p>
+    <p>
+        <label for="signa" class="tip">个性签名</label>
+        <input type="text" id="signa" name="signa">
+    </p>
+    <button>确认</button>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</form>
+</body>
+</html>

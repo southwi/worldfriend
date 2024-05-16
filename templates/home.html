@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.name }}的个人主页</title>
+</head>
+<body>
+    <h1>{{ user.name }}的个人主页</h1>
+    <img src="{{ user.avatar.url }}" alt="{{ user.name }}的头像">
+    <p>个性签名：{{ user.signature }}</p>
+    <h2>发布过的帖子：</h2>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <p>{{ post.text }}</p>
+                {% if post.pictureway %}
+                    <img src="{{ post.pictureway.url }}" alt="{{ post.text }}">
+                {% endif %}
+                <p>发布时间：{{ post.saytime }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
