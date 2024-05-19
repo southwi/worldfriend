@@ -25,6 +25,7 @@
     </style>
 </head>
 <body>
+<div class="container">
     <h1 style="color: blue; font-family: Arial, sans-serif; text-align: center; margin-top: 20px">Change Password</h1>
     {% csrf_token %}
     <form id="demo" autocomplete="off" method="post">
@@ -55,5 +56,6 @@
         </ul>
     {% endif %}
     </form>
+</div>
 </body>
 </html>

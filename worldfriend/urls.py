@@ -31,5 +31,5 @@ urlpatterns = [
     path('search_user/', search_user, name='search_user'),
     path('search_essay/', search_essay, name='search_essay'),
     path('search_comments/', search_comments, name='search_comments'),
-    #path('homepage/<int:user_id>/', homepage, name=homepage),
+    path('homepage/', homepage, name='homepage'),
 ]

@@ -6,11 +6,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from app01.models import *
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.http import JsonResponse
 from django.db import connection
 
-login_name = "test"
+login_name = "无敌暴龙战士"
 
 
 def adduser(request):
@@ -323,10 +323,13 @@ def search_comments(request):
 '''
 
 
-'''def homepage(request):
+def homepage(request):
     name = login_name
-    user = Adpass.objects.get(name=name)
-    user_id = user.id
-    user = User.objects.get(id=user_id)
-    posts = Whosays.objects.filter(ownerid=user_id).order_by('-saytime')
-    return render(request, 'home.html', {'user': user, 'posts': posts})'''
+    user = User.objects.get(name=name)
+    posts = Whosays.objects.filter(ownerid=user.id).order_by('-saytime')
+    # 获取每个帖子的评论
+    post_ids = [post.essayid for post in posts]
+    comments = Comments.objects.filter(essayid__in=post_ids)
+    # 将评论与帖子进行关联
+    return render(request, 'home.html', {'user': user, 'posts': posts, 'comments': comments})
+

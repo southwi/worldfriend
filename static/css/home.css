@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", sans-serif;
+  background-color: #000;
+  color: #fff;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 20px;
+}
+
+.header-content h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #ffcccc; /* 淡红色 */
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 2px solid #ffcccc; /* 淡红色 */
+}
+
+.signature {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #ffcccc; /* 淡红色 */
+}
+
+.posts {
+  text-align: left;
+  margin-top: 40px;
+}
+
+.posts h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #ffcccc; /* 淡红色 */
+}
+
+.post {
+  margin-bottom: 40px;
+  border: 1px solid #ffcccc; /* 淡红色 */
+  padding: 10px;
+  position: relative;
+}
+
+.post p {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #ffcccc; /* 淡红色 */
+}
+
+.post img {
+  max-width: 100%;
+  margin-top: 10px;
+}
+
+.time {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 1rem;
+  color: #ffcccc; /* 淡红色 */
+}
+
+.comments {
+  background-color: #440000; /* 深红色 */
+  margin-top: 10px;
+  padding: 5px;
+}
+
+.comments p {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #ffcccc; /* 淡红色 */
+}
+
+@media screen and (max-width: 500px) {
+  .header-content h1 {
+    font-size: 2rem;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .signature {
+    font-size: 1rem;
+  }
+
+  .posts h2 {
+    font-size: 1.5rem;
+  }
+
+  .post p {
+    font-size: 1rem;
+  }
+
+  .time {
+    font-size: 0.8rem;
+  }
+
+  .comments p {
+    font-size: 0.8rem;
+  }
+}

@@ -5,22 +5,161 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ user.name }}的个人主页</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #2c3e50, #bdc3c7);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 0 800px;
+            margin-left: 100px;
+            margin-right: 100px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        h1 {
+            font-size: 36px;
+            color: #8e44ad;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .signature {
+            font-size: 18px;
+            color: #3498db;
+        }
+        .posts h2 {
+            font-size: 24px;
+            color: #8e44ad;
+            margin-bottom: 10px;
+        }
+        .post {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .post p {
+            margin: 0;
+        }
+        .time {
+            font-size: 14px;
+            color: #3498db;
+        }
+        .comments {
+            margin-top: 10px;
+            padding-left: 20px;
+            border-left: 2px solid #3498db;
+        }
+        .comment {
+          font-family: Arial, sans-serif; /* 字体样式 */
+          font-size: 12px; /* 字体大小 */
+          line-height: 1.4; /* 行高 */
+          color: #666666; /* 字体颜色 */
+        }
+
+        .comment a {
+          color: #0066cc; /* 链接字体颜色 */
+          text-decoration: none; /* 链接下划线样式 */
+        }
+
+        .comment a:hover {
+          text-decoration: underline; /* 鼠标悬停链接下划线样式 */
+        }
+
+        .comment .username {
+          font-weight: bold; /* 用户名字体粗细 */
+          color: #000000; /* 用户名字体颜色 */
+        }
+        .avatar_name{
+            color: #009dff;
+            font-size: 12px;
+            position: relative;
+            top: -8px;
+            right: 5px;
+        }
+        .avatar_signature{
+            color: #4c6474;
+            font-size: 14px;
+            position: relative;
+            top: -20px;
+            right: -12px;
+        }
+        .main_text{
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333333;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ user.name }}的个人主页</h1>
-    <img src="{{ user.avatar.url }}" alt="{{ user.name }}的头像">
-    <p>个性签名：{{ user.signature }}</p>
-    <h2>发布过的帖子：</h2>
-    <ul>
-        {% for post in posts %}
-            <li>
-                <p>{{ post.text }}</p>
-                {% if post.pictureway %}
-                    <img src="{{ post.pictureway.url }}" alt="{{ post.text }}">
-                {% endif %}
-                <p>发布时间：{{ post.saytime }}</p>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <div class="buttons">
+            <button onclick="change_pwd()">修改密码</button>
+            <button>按钮2</button>
+            <button>按钮3</button>
+            <button>按钮4</button>
+            <button>按钮5</button>
+        </div>
+        <header>
+                <h1>{{ user.name }}的个人主页</h1>
+        </header>
+        <div class="main-content">
+        <div class="profile">
+            <p>
+                <img src="{% static 'img/' %}{{ user.avatar }}"  alt="{{ user.name }}" class="avatar">
+                <a class="signature">{{ user.name }}</a>
+            </p>
+            </div>
+            <p class="avatar_signature">{{ user.signature }}</p>
+            <div class="posts">
+                <h2>发布过的帖子：</h2>
+                <ul>
+                    {% for post in posts %}
+                    <li class="post">
+                    <p>
+                        <img width="25" height="25" src="{% static 'img/' %}{{ user.avatar }}" style="border-radius: 50%;" alt="{{ user.name }}">
+                        <a class="avatar_name">{{ user.name }}</a>
+                    </p>
+                    <p class="main_text">{{ post.text }}</p>
+                    {% if post.pictureway %}
+                        <img src="{% static 'img/' %}{{ post.pictureway }}" alt="{{ post.text }}">
+                    {% endif %}
+                    <p class="time">发布时间：{{ post.saytime }}</p>
+                    <ul>
+                        {% for comment in comments %}
+                            {% if post.essayid == comment.essayid %}
+                                <div class="comments">
+                                    <p class="comment">{{ comment.text }}</p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+<script>
+    function change_pwd(){
+        location.href='/change_pwd';
+    }
+</script>
 </body>
 </html>
