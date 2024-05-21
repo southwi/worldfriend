@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友圈发表页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>发表朋友圈</h1>
+        <form id="demo" autocomplete="off" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div>
+            <label for="text">朋友圈内容</label><br>
+            <textarea id="text" name="text" rows="4" cols="50"></textarea>
+        </div>
+        <div>
+            <label for="imageUpload">添加图片</label><br>
+            <input type="file" id="imageUpload" name="imageUpload" accept="image/*" onchange="previewImage(event)">
+            <br>
+            <img id="imagePreview" src="#" alt="预览图片" style="max-width: 200px; display: none;">
+            <button id="removeImageButton" style="display: none;" onclick="removeImage(event)">删除图片</button>
+        </div>
+        <div>
+            <input type="submit" value="发表">
+        </div>
+    </form>
+
+    <script>
+        function previewImage(event) {
+            var image = document.getElementById('imagePreview');
+            image.style.display = 'block';
+            image.src = URL.createObjectURL(event.target.files[0]);
+            document.getElementById('removeImageButton').style.display = 'block';
+        }
+
+        function removeImage(event) {
+            event.preventDefault(); // 阻止表单的默认提交行为
+            var image = document.getElementById('imagePreview');
+            image.style.display = 'none';
+            image.src = "#";
+            document.getElementById('imageUpload').value = "";
+            document.getElementById('removeImageButton').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

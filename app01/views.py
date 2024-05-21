@@ -1,18 +1,22 @@
+import os
+
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import *
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from app01.models import *
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Prefetch
+from django.db.models import Q, Max
 from django.http import JsonResponse
 from django.db import connection
+
+from worldfriend import settings
+from .forms import *
 
 login_name = "无敌暴龙战士"
 
 
+# 添加用户
 def adduser(request):
     name = login_name
     if Adpass.objects.filter(name=name).exists():
@@ -85,15 +89,19 @@ def adduser(request):
         return redirect('http://localhost:8000/')'''
 
 
+# 删除用户
 def removeuser(request):
     name = login_name
     if Adpass.objects.filter(name=name).exists():
         if request.method == 'POST':
+            if name != 'admin':
+                messages.error(request, '该操作只能由管理员执行！')
+                return redirect('removeuser')
             userid = request.POST.get('id')
             name = request.POST.get('name')
             password = request.POST.get('password')
             if userid == '000000000' or name == 'admin':
-                messages.error(request, '不可删除管理员账号!')
+                messages.error(request, '请勿尝试删除管理员账号!')
                 return redirect('removeuser')
                 # 使用存储过程删除用户
             with connection.cursor() as cursor:
@@ -107,7 +115,6 @@ def removeuser(request):
                 # 删除成功后的提示消息
                 messages.success(request, '成功删除用户!')
                 return redirect('removeuser')
-
         return render(request, 'removeuser.html')
     else:
         # 未登录时的处理
@@ -135,6 +142,7 @@ def removeuser(request):
     return render(request, 'change_pwd.html')'''
 
 
+# 修改密码
 def change_pwd(request):
     name = login_name
     if request.method == 'POST':
@@ -157,6 +165,7 @@ def change_pwd(request):
     return render(request, 'change_pwd.html')
 
 
+# 验证码生成
 def refresh_captcha(request):
     # 生成新的验证码 hashkey
     hashkey = CaptchaStore.generate_key()
@@ -165,6 +174,7 @@ def refresh_captcha(request):
     return JsonResponse({'image_url': imgage_url, 'hashkey': hashkey})
 
 
+# 登陆页面
 def login(request):
     # 验证码生成
     hashkey = CaptchaStore.generate_key()
@@ -198,6 +208,7 @@ def login(request):
         return render(request, 'login.html', locals())
 
 
+# 导航
 def index(request):
     return render(request, 'index.html')
 
@@ -224,6 +235,7 @@ def index(request):
     return render(request, 'search_user.html')'''
 
 
+# 查询用户
 def search_user(request):
     query = request.GET.get('query', '')
     if query:
@@ -246,6 +258,7 @@ def search_user(request):
     return render(request, 'search_user.html')
 
 
+# 查询朋友圈
 def search_essay(request):
     query1 = request.GET.get('query1', '')
 
@@ -269,6 +282,7 @@ def search_essay(request):
     return render(request, 'search_essay.html')
 
 
+# 查询评论
 def search_comments(request):
     query2 = request.GET.get('query2', '')
     if query2:
@@ -323,13 +337,89 @@ def search_comments(request):
 '''
 
 
+# 个人主页
 def homepage(request):
     name = login_name
     user = User.objects.get(name=name)
+    users = User.objects.all()
     posts = Whosays.objects.filter(ownerid=user.id).order_by('-saytime')
+    # print(users)
     # 获取每个帖子的评论
     post_ids = [post.essayid for post in posts]
     comments = Comments.objects.filter(essayid__in=post_ids)
+    # print(comments)
     # 将评论与帖子进行关联
-    return render(request, 'home.html', {'user': user, 'posts': posts, 'comments': comments})
+    return render(request, 'home.html', {'users': users, 'user': user, 'posts': posts, 'comments': comments})
 
+
+# 修改个人信息
+def change_message(request):
+    if request.method == 'POST':
+        form = UploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_name = form.cleaned_data.get('name')
+            sign = form.cleaned_data.get('sign')
+            uploaded_file = form.cleaned_data['image']
+            global login_name
+            old_name = login_name
+            user = User.objects.get(name=old_name)
+            if new_name != '':
+                user.name = new_name
+                login_name = user.name
+            if sign != '':
+                user.signature = sign
+            # 自定义文件保存的路径
+            upload_folder = os.path.join(settings.BASE_DIR, 'static\\img\\user\\photo\\')
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder)
+            # 构建新的保存路径，保持文件名不变
+            if uploaded_file:
+                file_path = os.path.join(upload_folder, uploaded_file.name)
+
+                # 将上传的文件保存到指定位置
+                with open(file_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                user.avatar = 'user/photo/' + uploaded_file.name
+            user.save()
+            # 生成文件路径后，将路径传递给模板渲染，或者进行其他操作
+            return redirect('homepage')
+    else:
+        form = UploadForm()
+    return render(request, 'change_message.html', {'form': form})
+
+
+# 创建朋友圈
+def add_essay(request):
+    if request.method == 'POST':
+        essay = UploadEssay(request.POST, request.FILES)
+        if essay.is_valid():
+            text = essay.cleaned_data['text']
+            image = essay.cleaned_data['imageUpload']
+            global login_name
+            now_name = login_name
+            # 当前登录的用户
+            user = User.objects.get(name=now_name)
+            # 生成最大essay_id + 1
+            max_essayid = Whosays.objects.aggregate(Max('essayid'))['essayid__max']
+            next_essayid = '1' + str(int(max_essayid[1:]) + 1).zfill(8)
+            essay_way = os.path.join(settings.BASE_DIR, 'static\\img\\whosays\\')
+            if not os.path.exists(essay_way):
+                os.makedirs(essay_way)
+            # 构建新的保存路径，保持文件名不变
+            # print(text)
+            if image:
+                file_path = os.path.join(essay_way, image.name)
+                #     print(image.name)
+                # 将上传的文件保存到指定位置
+                with open(file_path, 'wb+') as destination:
+                    for chunk in image.chunks():
+                        destination.write(chunk)
+                new_essay = Whosays(ownerid=user, essayid=next_essayid, text=text, saytime=datetime.now(),
+                                    pictureway='whosays/' + image.name)
+            else:
+                new_essay = Whosays(ownerid=user, essayid=next_essayid, saytime=datetime.now(), text=text)
+            new_essay.save()
+            return redirect('homepage')
+    return render(request, 'add_essay.html')

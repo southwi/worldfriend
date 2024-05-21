@@ -1,125 +1,105 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: "Helvetica Neue", sans-serif;
-  background-color: #000;
-  color: #fff;
-}
+            background: linear-gradient(to bottom, #2c3e50, #bdc3c7);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 0 800px;
+            margin-left: 100px;
+            margin-right: 100px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 20px;
-}
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        h1 {
+            font-size: 36px;
+            color: #8e44ad;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .signature {
+            font-size: 18px;
+            color: #3498db;
+        }
+        .posts h2 {
+            font-size: 24px;
+            color: #8e44ad;
+            margin-bottom: 10px;
+        }
+        .post {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .post p {
+            margin: 0;
+        }
+        .time {
+            font-size: 14px;
+            color: #3498db;
+        }
+        .comment_name{
+            font-size: 10px;
+            color: blue;
+            font-weight: 100;
+            text-align: left;
+        }
+        .comments {
+            margin-top: 10px;
+            padding-left: 20px;
+            border-left: 2px solid #3498db;
+        }
+        .comment {
+          font-family: Arial, sans-serif; /* 字体样式 */
+          font-size: 12px; /* 字体大小 */
+          line-height: 1.4; /* 行高 */
+          color: #666666; /* 字体颜色 */
+        }
 
-.header-content h1 {
-  font-size: 3rem;
-  margin-bottom: 20px;
-  color: #ffcccc; /* 淡红色 */
-}
+        .comment a {
+          color: #0066cc; /* 链接字体颜色 */
+          text-decoration: none; /* 链接下划线样式 */
+        }
 
-.profile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 40px;
-}
+        .comment a:hover {
+          text-decoration: underline; /* 鼠标悬停链接下划线样式 */
+        }
 
-.avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-bottom: 20px;
-  border: 2px solid #ffcccc; /* 淡红色 */
-}
-
-.signature {
-  font-size: 1.2rem;
-  line-height: 1.5;
-  color: #ffcccc; /* 淡红色 */
-}
-
-.posts {
-  text-align: left;
-  margin-top: 40px;
-}
-
-.posts h2 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: #ffcccc; /* 淡红色 */
-}
-
-.post {
-  margin-bottom: 40px;
-  border: 1px solid #ffcccc; /* 淡红色 */
-  padding: 10px;
-  position: relative;
-}
-
-.post p {
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  color: #ffcccc; /* 淡红色 */
-}
-
-.post img {
-  max-width: 100%;
-  margin-top: 10px;
-}
-
-.time {
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
-  font-size: 1rem;
-  color: #ffcccc; /* 淡红色 */
-}
-
-.comments {
-  background-color: #440000; /* 深红色 */
-  margin-top: 10px;
-  padding: 5px;
-}
-
-.comments p {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #ffcccc; /* 淡红色 */
-}
-
-@media screen and (max-width: 500px) {
-  .header-content h1 {
-    font-size: 2rem;
-  }
-
-  .avatar {
-    width: 80px;
-    height: 80px;
-  }
-
-  .signature {
-    font-size: 1rem;
-  }
-
-  .posts h2 {
-    font-size: 1.5rem;
-  }
-
-  .post p {
-    font-size: 1rem;
-  }
-
-  .time {
-    font-size: 0.8rem;
-  }
-
-  .comments p {
-    font-size: 0.8rem;
-  }
-}
+        .comment .username {
+          font-weight: bold; /* 用户名字体粗细 */
+          color: #000000; /* 用户名字体颜色 */
+        }
+        .avatar_name{
+            color: #009dff;
+            font-size: 12px;
+            position: relative;
+            top: -8px;
+            right: 5px;
+        }
+        .avatar_signature{
+            color: #4c6474;
+            font-size: 14px;
+            position: relative;
+            top: -20px;
+            right: -12px;
+        }
+        .main_text{
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333333;
+        }

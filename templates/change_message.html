@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8">
+    <title>修改个人信息</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/validate-1.14.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/demo.js' %}"></script>
+    <style>
+        .messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: blue; font-family: Arial, sans-serif; text-align: center; margin-top: 20px">修改个人信息</h1>
+    <form id="demo" autocomplete="off" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <p>
+            <label for="name" class="tip">新昵称</label>
+            <input type="text" id="name" name="name">
+        </p>
+        <p class="prompot"><i class="iconfont"></i></p>
+        <p>
+            <label for="sign" class="tip">个性签名</label>
+            <input type="text" id="sign" name="sign">
+        </p>
+        <p class="prompot"><i class="iconfont"></i></p>
+        <p>
+            <label for="image" class="tip">修改头像</label>
+            <input type="file" name="image" id="image" accept="image/*">
+        </p>
+        <p class="prompot"><i class="iconfont"></i></p>
+        <button type="submit">确认</button>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </form>
+</body>
+</html>

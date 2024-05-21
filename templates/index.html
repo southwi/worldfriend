@@ -36,8 +36,14 @@
       <li class="roll_4"><a href=""><p>即使我们身处天涯海角，也不会忘记彼此的友情。</p></a></li>
       <li class="roll_5"><a href=""><p>人生就像一场旅行，不在于目的地，而在于沿途的风景和经历。</p></a></li>
   </ul>
+        {% if messages %}
+        <ul class="messages">
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {{ message }}
+            </li>
+        </ul>
+    {% endif %}
 </div>
-
 
 <script>
     var menu = [
@@ -59,13 +65,20 @@
         },
         {
             title: 'null2',
-            subtitle: {}
-            link: ['../adduser2', '', '', '/asafs2']
+            subtitle: {
+                'zheshi1':'/adduser',
+                'zheshi1':'/adduser',
+                'zheshi1':'/adduser',
+                'zheshi1':'/adduser',
+            }
         },
         {
             title: 'null3',
-            subtitle: ['0', '1', '2', '菜单'],
-            link: ['../adduser3', '', '', '/asafs3']
+            subtitle: {
+                'zheshi1':'/adduser',
+                'zheshi1':'/adduser',
+                'zheshi1':'/adduser',
+            }
         },
     ]
     renderMenu(menu)

@@ -32,4 +32,6 @@ urlpatterns = [
     path('search_essay/', search_essay, name='search_essay'),
     path('search_comments/', search_comments, name='search_comments'),
     path('homepage/', homepage, name='homepage'),
+    path('change_message/', change_message, name='change_message'),
+    path('add_essay/', add_essay, name='add_essay'),
 ]

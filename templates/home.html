@@ -1,120 +1,20 @@
 <!DOCTYPE html>
 {% load static %}
+{% load tools %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ user.name }}的个人主页</title>
-    <style>
-        body {
-            background: linear-gradient(to bottom, #2c3e50, #bdc3c7);
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            margin: 0 800px;
-            margin-left: 100px;
-            margin-right: 100px;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px 0;
-        }
-        h1 {
-            font-size: 36px;
-            color: #8e44ad;
-        }
-        .profile {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-right: 20px;
-        }
-        .signature {
-            font-size: 18px;
-            color: #3498db;
-        }
-        .posts h2 {
-            font-size: 24px;
-            color: #8e44ad;
-            margin-bottom: 10px;
-        }
-        .post {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .post p {
-            margin: 0;
-        }
-        .time {
-            font-size: 14px;
-            color: #3498db;
-        }
-        .comments {
-            margin-top: 10px;
-            padding-left: 20px;
-            border-left: 2px solid #3498db;
-        }
-        .comment {
-          font-family: Arial, sans-serif; /* 字体样式 */
-          font-size: 12px; /* 字体大小 */
-          line-height: 1.4; /* 行高 */
-          color: #666666; /* 字体颜色 */
-        }
-
-        .comment a {
-          color: #0066cc; /* 链接字体颜色 */
-          text-decoration: none; /* 链接下划线样式 */
-        }
-
-        .comment a:hover {
-          text-decoration: underline; /* 鼠标悬停链接下划线样式 */
-        }
-
-        .comment .username {
-          font-weight: bold; /* 用户名字体粗细 */
-          color: #000000; /* 用户名字体颜色 */
-        }
-        .avatar_name{
-            color: #009dff;
-            font-size: 12px;
-            position: relative;
-            top: -8px;
-            right: 5px;
-        }
-        .avatar_signature{
-            color: #4c6474;
-            font-size: 14px;
-            position: relative;
-            top: -20px;
-            right: -12px;
-        }
-        .main_text{
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #333333;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
 </head>
 <body>
     <div class="container">
         <div class="buttons">
+            <button onclick="change_msg()">修改个人信息</button>
             <button onclick="change_pwd()">修改密码</button>
-            <button>按钮2</button>
-            <button>按钮3</button>
-            <button>按钮4</button>
-            <button>按钮5</button>
+            <button onclick="remove_user()">删除账户</button>
+            <button>发表朋友圈</button>
         </div>
         <header>
                 <h1>{{ user.name }}的个人主页</h1>
@@ -138,27 +38,42 @@
                     </p>
                     <p class="main_text">{{ post.text }}</p>
                     {% if post.pictureway %}
-                        <img src="{% static 'img/' %}{{ post.pictureway }}" alt="{{ post.text }}">
+                        <img  style="max-width: 300px;" src="{% static 'img/' %}{{ post.pictureway }}" alt="{{ post.text }}">
                     {% endif %}
                     <p class="time">发布时间：{{ post.saytime }}</p>
+                    
                     <ul>
                         {% for comment in comments %}
                             {% if post.essayid == comment.essayid %}
                                 <div class="comments">
+                                    {% for userx in users %}
+                                        {% if comment.userid_id == userx.id %}
+                                            <p class="comment_name">{{ userx.name }}:</p>
+                                        {% endif %}
+                                    {% endfor %}
                                     <p class="comment">{{ comment.text }}</p>
                                 </div>
                             {% endif %}
                         {% endfor %}
-                    </ul>
+                    </ul><!--这是评论的内容-->
                     </li>
                     {% endfor %}
-                </ul>
+                </ul><!--这是遍历每条朋友圈-->
             </div>
         </div>
     </div>
 <script>
     function change_pwd(){
         location.href='/change_pwd';
+    }
+    function remove_user() {
+        location.href='/removeuser';
+    }
+    function change_msg() {
+        location.href='/change_message';
+    }
+    function add_essay() {
+        location.href='/add_essay'
     }
 </script>
 </body>
