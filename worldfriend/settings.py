@@ -29,6 +29,8 @@ ALLOWED_HOSTS = []
 
 LOGIN_URL = 'http://localhost:8000/'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
 # Application definition
 CAPTCHA_IMAGE_SIZE = (80, 45)   # 设置 captcha 图片大小
 

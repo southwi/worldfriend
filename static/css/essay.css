@@ -1,0 +1,63 @@
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .button-custom {
+            background-color: #576258; /* 绿色背景 */
+            color: white; /* 白色文字 */
+            width: 100px;
+            height: 50px;
+            padding: 5px 16px; /* 内边距 */
+            text-align: center; /* 居中对齐 */
+            text-decoration: none; /* 无下划线 */
+            display: inline-block; /* 行内块 */
+            font-size: 16px; /* 字体大小 */
+            margin: 4px 2px; /* 外边距 */
+            border: none; /* 无边框 */
+            border-radius: 12px; /* 圆角边框 */
+            cursor: pointer; /* 鼠标指针 */
+            transition: background-color 0.3s ease; /* 背景色过渡效果 */
+        }

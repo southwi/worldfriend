@@ -18,6 +18,22 @@
         .success {
             color: black;
         }
+        .button-custom {
+            background-color: #576258; /* 绿色背景 */
+            color: white; /* 白色文字 */
+            width: 130px;
+            height: 50px;
+            padding: 5px 16px; /* 内边距 */
+            text-align: center; /* 居中对齐 */
+            text-decoration: none; /* 无下划线 */
+            display: inline-block; /* 行内块 */
+            font-size: 16px; /* 字体大小 */
+            margin: 4px 2px; /* 外边距 */
+            border: none; /* 无边框 */
+            border-radius: 12px; /* 圆角边框 */
+            cursor: pointer; /* 鼠标指针 */
+            transition: background-color 0.3s ease; /* 背景色过渡效果 */
+        }
     </style>
     <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}">
     <script type="text/javascript" src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
@@ -25,8 +41,9 @@
     <script type="text/javascript" src="{% static 'js/demo.js' %}"></script>
 </head>
 <body>
+    <button class="button-custom" onclick="rtn_index()">返回导航目录</button>
     <h1 style="color: blue; font-family: Arial, sans-serif; text-align: center; margin-top: 20px">Add User</h1>
-<form id="demo" autocomplete="off" method="post">
+    <form id="demo" autocomplete="off" method="post">
     {% csrf_token %}
     <p>
         <label for="id" class="tip">*ID：</label>
@@ -63,5 +80,10 @@
         </ul>
     {% endif %}
 </form>
+<script>
+    function rtn_index() {
+        location.href='/index'
+    }
+</script>
 </body>
 </html>

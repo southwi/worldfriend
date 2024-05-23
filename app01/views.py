@@ -12,19 +12,23 @@ from django.db import connection
 
 from worldfriend import settings
 from .forms import *
-
-login_name = "无敌暴龙战士"
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .decorators import custom_login_required
 
 
 # 添加用户
+@custom_login_required
 def adduser(request):
-    name = login_name
-    if Adpass.objects.filter(name=name).exists():
+    if Adpass.objects.filter(name=request.session.get('name')).exists():
         if request.method == 'POST':
             userid = request.POST.get('id')
             name = request.POST.get('username')
             password = request.POST.get('password')
             signa = request.POST.get('signa')
+            if request.session.get('name') != 'admin':
+                messages.error(request, '该操作只能由管理员执行！')
+                return redirect('adduser')
             exists = Adpass.objects.filter(name=name).exists()
             if exists:
                 messages.error(request, '创建失败，用户名已存在！')
@@ -90,8 +94,9 @@ def adduser(request):
 
 
 # 删除用户
+@custom_login_required
 def removeuser(request):
-    name = login_name
+    name = request.session.get('name')
     if Adpass.objects.filter(name=name).exists():
         if request.method == 'POST':
             if name != 'admin':
@@ -143,9 +148,10 @@ def removeuser(request):
 
 
 # 修改密码
+@custom_login_required
 def change_pwd(request):
-    name = login_name
     if request.method == 'POST':
+        name = request.session.get('name')
         pwd_now = request.POST.get('password1')
         pwd_new = request.POST.get('password')
         with connection.cursor() as cursor:
@@ -176,39 +182,45 @@ def refresh_captcha(request):
 
 # 登陆页面
 def login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['name']
+            password = form.cleaned_data['pwd']
+            vcode = form.cleaned_data['vcode']
+            vcode_key = form.cleaned_data['hashkey']
+            # 验证查询数据库生成正确的码
+            try:
+                get_captcha = CaptchaStore.objects.get(hashkey=vcode_key)
+                if vcode.lower() != get_captcha.response.lower():
+                    messages.error(request, '验证码不正确！')
+                    return render(request, 'login.html', {'form': form})
+
+                user = Adpass.objects.get(name=username)
+                if user.password == password:
+                    # 设置会话信息
+                    request.session['id'] = user.id
+                    request.session['name'] = user.name
+                    return redirect('index/')  # 重定向到主页
+                else:
+                    messages.error(request, '密码不正确！')
+                    return render(request, 'login.html', {'form': form})
+            except Adpass.DoesNotExist:
+                messages.error(request, '用户不存在！')
+                return render(request, 'login.html', {'form': form})
+            except CaptchaStore.DoesNotExist:
+                messages.error(request, '验证码无效！')
+                return render(request, 'login.html', {'form': form})
+    else:
+        form = LoginForm()
     # 验证码生成
     hashkey = CaptchaStore.generate_key()
     imgage_url = captcha_image_url(hashkey)
-
-    if request.method == 'POST':
-        username = request.POST.get('name')
-        password = request.POST.get('pwd')
-        vcode = request.POST.get('vcode')
-        vcode_key = request.POST.get('hashkey')
-        # 验证查询数据库生成正确的码
-        get_captcha = CaptchaStore.objects.get(hashkey=vcode_key)
-        try:
-            user = Adpass.objects.get(name=username)
-        except:
-            messages.error(request, '用户不存在！')
-            return render(request, 'login.html', locals())
-
-        if user.password == password:
-            if vcode.lower() == get_captcha.response.lower():
-                global login_name
-                login_name = username
-                return redirect('index/')  # 重定向到添加用户页面
-            else:
-                messages.error(request, '验证码不正确！')
-                return render(request, 'login.html', locals())
-        else:
-            messages.error(request, '密码不正确！')
-            return render(request, 'login.html', locals())
-    else:
-        return render(request, 'login.html', locals())
+    return render(request, 'login.html', {'form': form, 'hashkey': hashkey, 'imgage_url': imgage_url})
 
 
 # 导航
+@custom_login_required
 def index(request):
     return render(request, 'index.html')
 
@@ -236,6 +248,7 @@ def index(request):
 
 
 # 查询用户
+@custom_login_required
 def search_user(request):
     query = request.GET.get('query', '')
     if query:
@@ -259,6 +272,7 @@ def search_user(request):
 
 
 # 查询朋友圈
+@custom_login_required
 def search_essay(request):
     query1 = request.GET.get('query1', '')
 
@@ -283,6 +297,7 @@ def search_essay(request):
 
 
 # 查询评论
+@custom_login_required
 def search_comments(request):
     query2 = request.GET.get('query2', '')
     if query2:
@@ -338,8 +353,9 @@ def search_comments(request):
 
 
 # 个人主页
+@custom_login_required
 def homepage(request):
-    name = login_name
+    name = request.session.get('name')
     user = User.objects.get(name=name)
     users = User.objects.all()
     posts = Whosays.objects.filter(ownerid=user.id).order_by('-saytime')
@@ -353,6 +369,7 @@ def homepage(request):
 
 
 # 修改个人信息
+@custom_login_required
 def change_message(request):
     if request.method == 'POST':
         form = UploadForm(request.POST, request.FILES)
@@ -360,12 +377,14 @@ def change_message(request):
             new_name = form.cleaned_data.get('name')
             sign = form.cleaned_data.get('sign')
             uploaded_file = form.cleaned_data['image']
-            global login_name
-            old_name = login_name
+            old_name = request.session.get('name')
             user = User.objects.get(name=old_name)
             if new_name != '':
+                if Adpass.objects.exclude(id=request.session.get('id')).filter(name=new_name).exists():
+                    messages.error(request, '该用户名已被使用，请选择其他用户名！')
+                    return redirect('change_message')
                 user.name = new_name
-                login_name = user.name
+                request.session['name'] = new_name
             if sign != '':
                 user.signature = sign
             # 自定义文件保存的路径
@@ -390,15 +409,15 @@ def change_message(request):
     return render(request, 'change_message.html', {'form': form})
 
 
-# 创建朋友圈
+# 发布朋友圈
+@custom_login_required
 def add_essay(request):
     if request.method == 'POST':
         essay = UploadEssay(request.POST, request.FILES)
         if essay.is_valid():
             text = essay.cleaned_data['text']
             image = essay.cleaned_data['imageUpload']
-            global login_name
-            now_name = login_name
+            now_name = request.session.get('name')
             # 当前登录的用户
             user = User.objects.get(name=now_name)
             # 生成最大essay_id + 1

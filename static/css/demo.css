@@ -34,6 +34,7 @@
     font-family: '微软雅黑';
     line-height: 50px;
 }
+
 p .tip {
     display: inline-block;
     width: 100px;
@@ -83,6 +84,7 @@ button {
     color: #fff;
     cursor: pointer;
 }
+
 /*设置默认的错误提示的样式*/
 .prompot {
     margin-left: 115px;

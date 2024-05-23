@@ -11,10 +11,11 @@
 <body>
     <div class="container">
         <div class="buttons">
+            <button onclick="rtn_index()">返回导航目录</button>
             <button onclick="change_msg()">修改个人信息</button>
             <button onclick="change_pwd()">修改密码</button>
             <button onclick="remove_user()">删除账户</button>
-            <button>发表朋友圈</button>
+            <button onclick="add_essay()">发表朋友圈</button>
         </div>
         <header>
                 <h1>{{ user.name }}的个人主页</h1>
@@ -74,6 +75,9 @@
     }
     function add_essay() {
         location.href='/add_essay'
+    }
+    function rtn_index() {
+        location.href='/index'
     }
 </script>
 </body>
