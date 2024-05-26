@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+{% load static %}
+{% load tools %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友们的世界</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="buttons">
+            <button onclick="rtn_index()">返回导航目录</button>
+            <button onclick="change_msg()">修改个人信息</button>
+            <button onclick="change_pwd()">修改密码</button>
+            <button onclick="remove_user()">删除账户</button>
+            <button onclick="add_essay()">发表朋友圈</button>
+        </div>
+        <div class="main-content">
+        <div class="profile">
+            </div>
+            <div class="posts">
+                <h2>发布过的帖子：</h2>
+                <ul>  
+                    {% for post in posts %}
+                    <!--这里是每个朋友圈的主体-->
+                    <li class="post">
+                    <p>
+                        <img width="25" height="25" src="{% static 'img/' %}{{ post.ownerid.avatar }}" style="border-radius: 50%;" alt="{{ user.name }}">
+                        <a class="avatar_name">{{ post.ownerid.name }}</a>
+                    </p> 
+                    <p class="main_text">{{ post.text }}</p>
+                    {% if post.pictureway %}
+                        <img  style="max-width: 300px;" src="{% static 'img/' %}{{ post.pictureway }}" alt="图片">
+                    {% endif %}
+                    <p class="time">发布时间：{{ post.saytime }}</p>
+                    
+                    <!--以下是点赞部分-->
+                    <div>
+                        <div class="like_list">
+                            <img width="25" height="25" src="{% static 'img/spt.jpg' %}" alt="spt" class="like_icon">
+                            {% for like in supports %}
+                                {% if like.essayid == post.essayid %}
+                                    <img width="25" height="25" src="{% static 'img/' %}{{ like.omnerid.avatar }}" alt="{{ like.sptid }}" class="like_avatar">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!--这是添加评论功能-->
+                    <form id="comment-form-{{ post.essayid }}" method="post" data-post-id="{{ post.essayid_id }}">
+                        {% csrf_token %}
+                        <input type="text" name="comment_text" placeholder="输入你的评论...">
+                        <button type="button" onclick="submitComment({{ post.essayid }})">发表评论</button>
+                    </form>
+                    
+                    <!-- 这是评论的内容 -->
+                        <div id="comments_container_{{ post.essayid }}">
+                            {% for comment in comments %}
+                                {% if post.essayid == comment.essayid %}
+                                    <ul>
+                                        <li>
+                                            <div class="comments">
+                                                <p class="comment_name">{{ comment.userid.name }}:</p>
+                                                <p class="comment">{{ comment.text }}</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                    </li>
+                    {% endfor %}
+                </ul><!--这是遍历每条朋友圈-->
+            </div>
+        </div>
+    </div>
+<script>
+        function change_pwd(){
+            location.href='/change_pwd';
+        }
+        function remove_user() {
+            location.href='/removeuser';
+        }
+        function change_msg() {
+            location.href='/change_message';
+        }
+        function add_essay() {
+            location.href='/add_essay'
+        }
+        function rtn_index() {
+            location.href='/index'
+        }
+function submitComment(postId) {
+    var form = $('#comment-form-' + postId);
+    var postData = form.serialize();
+    postData += '&post_id=' + encodeURIComponent(postId);
+
+    console.log("Post Data: ", postData);  // 用于调试，确保postData正确
+    $.ajax({
+        type: 'POST',
+        url: '{% url "add_comment" %}',
+        data: postData,
+        success: function(data) {
+            // 在页面上添加新评论
+            var newCommentHTML = '<ul>' +
+            '<li>' +
+                '<div class="comments">' +
+                '<p class="comment_name">' + data.username + ':</p>' +
+                '<p class="comment">' + data.text + '</p>' +
+                '</div>' +
+            '</li>' +
+            '</ul>';
+            $('#comments_container_' + postId).append(newCommentHTML);
+            
+            // 清空评论输入框
+            form.find('input[name="comment_text"]').val('');
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            console.log('发生错误：' + errorThrown);
+        }
+    });
+}
+
+    </script>
+</body>
+</html>  

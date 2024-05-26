@@ -30,7 +30,6 @@ class Support(models.Model):
     essayid = models.CharField(max_length=15)
     sptid = models.CharField(primary_key=True, max_length=15)
     spttime = models.DateTimeField()
-    sptavatar = models.CharField(max_length=100)
 
     class Meta:
         managed = False

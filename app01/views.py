@@ -199,7 +199,7 @@ def login(request):
                 user = Adpass.objects.get(name=username)
                 if user.password == password:
                     # 设置会话信息
-                    request.session['id'] = user.id
+                    request.session['user_id'] = user.id
                     request.session['name'] = user.name
                     return redirect('index/')  # 重定向到主页
                 else:
@@ -217,6 +217,17 @@ def login(request):
     hashkey = CaptchaStore.generate_key()
     imgage_url = captcha_image_url(hashkey)
     return render(request, 'login.html', {'form': form, 'hashkey': hashkey, 'imgage_url': imgage_url})
+
+
+def logout(request):
+    # Check if the user is logged in
+    if 'user_id' in request.session:
+        request.session.flush()
+        messages.success(request, '您已成功登出！')
+        return redirect('login')
+    else:
+        messages.error(request, '登出失败')
+        return redirect('add_essay')
 
 
 # 导航
@@ -352,22 +363,6 @@ def search_comments(request):
 '''
 
 
-# 个人主页
-@custom_login_required
-def homepage(request):
-    name = request.session.get('name')
-    user = User.objects.get(name=name)
-    users = User.objects.all()
-    posts = Whosays.objects.filter(ownerid=user.id).order_by('-saytime')
-    # print(users)
-    # 获取每个帖子的评论
-    post_ids = [post.essayid for post in posts]
-    comments = Comments.objects.filter(essayid__in=post_ids)
-    # print(comments)
-    # 将评论与帖子进行关联
-    return render(request, 'home.html', {'users': users, 'user': user, 'posts': posts, 'comments': comments})
-
-
 # 修改个人信息
 @custom_login_required
 def change_message(request):
@@ -426,7 +421,7 @@ def add_essay(request):
             essay_way = os.path.join(settings.BASE_DIR, 'static\\img\\whosays\\')
             if not os.path.exists(essay_way):
                 os.makedirs(essay_way)
-            # 构建新的保存路径，保持文件名不变
+            # 构建新地保存路径，保持文件名不变
             # print(text)
             if image:
                 file_path = os.path.join(essay_way, image.name)
@@ -442,3 +437,50 @@ def add_essay(request):
             new_essay.save()
             return redirect('homepage')
     return render(request, 'add_essay.html')
+
+
+# 个人主页
+@custom_login_required
+def homepage(request):
+    name = request.session.get('name')
+    user = User.objects.get(name=name)
+    users = User.objects.all()
+    posts = Whosays.objects.filter(ownerid=user.id).order_by('-saytime')
+    # print(users)
+    # 获取每个帖子的评论
+    post_ids = [post.essayid for post in posts]
+    comments = Comments.objects.filter(essayid__in=post_ids)
+    likes = Support.objects.select_related('omnerid').filter(essayid__in=post_ids)
+    # 将评论与帖子进行关联
+    return render(request, 'home.html',
+                  {'users': users, 'likes': likes, 'user': user, 'posts': posts, 'comments': comments})
+
+
+# 朋友圈列表
+@custom_login_required
+def essay_center(request):
+    posts = Whosays.objects.select_related('ownerid').all().order_by('-saytime')
+    supports = Support.objects.select_related('omnerid').all()
+    comments = Comments.objects.select_related('userid').all().order_by('textid')
+    return render(request, 'essay_center.html',
+                  {'posts': posts, 'supports': supports, 'comments': comments})
+
+
+def add_comment(request):
+    if request.method == 'POST':
+        user = User.objects.get(id=request.session.get('user_id'))
+        post_id = request.POST.get('post_id')
+        comment_text = request.POST.get('comment_text')
+
+        # 获取最大 textid 并生成下一个 textid
+        max_textid = Comments.objects.aggregate(Max('textid'))['textid__max']
+        next_textid = '2' + str(int(max_textid[1:]) + 1).zfill(8)
+
+        # 创建评论对象并保存到数据库
+        comment = Comments(essayid=post_id, text=comment_text, userid=user, textid=next_textid, saytime=datetime.now())
+        comment.save()
+
+        # 返回新评论的用户名和文本内容
+        return JsonResponse({'username': comment.userid.name, 'text': comment.text, 'saytime': comment.saytime.strftime('%Y-%m-%d %H:%M:%S')})
+
+    return redirect('essay_center')

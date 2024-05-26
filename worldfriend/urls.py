@@ -34,4 +34,7 @@ urlpatterns = [
     path('homepage/', homepage, name='homepage'),
     path('change_message/', change_message, name='change_message'),
     path('add_essay/', add_essay, name='add_essay'),
+    path('', logout, name='logout'),
+    path('essay_center/', essay_center, name='essay_center'),
+    path('add_comment/', add_comment, name='add_comment'),
 ]

@@ -9,6 +9,11 @@
 </head>
 <body>
 <button class="button-custom" onclick="rtn_index()">返回主页</button>
+<form id="logout-form" action="{% url 'logout' %}" method="post" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="button-custom">登出</button>
+</form>
+
     <h1>发表朋友圈</h1>
         <form id="demo" autocomplete="off" method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -46,7 +51,7 @@
             document.getElementById('removeImageButton').style.display = 'none';
         }
         function rtn_index() {
-            location.href='/add_essay'
+            location.href='/homepage'
         }
     </script>
 </body>

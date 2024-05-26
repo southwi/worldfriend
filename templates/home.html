@@ -36,13 +36,24 @@
                     <p>
                         <img width="25" height="25" src="{% static 'img/' %}{{ user.avatar }}" style="border-radius: 50%;" alt="{{ user.name }}">
                         <a class="avatar_name">{{ user.name }}</a>
-                    </p>
+                    </p> 
                     <p class="main_text">{{ post.text }}</p>
                     {% if post.pictureway %}
                         <img  style="max-width: 300px;" src="{% static 'img/' %}{{ post.pictureway }}" alt="{{ post.text }}">
                     {% endif %}
                     <p class="time">发布时间：{{ post.saytime }}</p>
-                    
+                    <!--以下是点赞部分-->
+                    <div>
+                        <div class="like_list">
+                            <img width="25" height="25" src="{% static 'img/spt.jpg' %}" alt="spt" class="like_icon">
+                            {% for like in likes %}
+                                {% if like.essayid == post.essayid %}
+                                    <img width="25" height="25" src="{% static 'img/' %}{{ like.omnerid.avatar }}" alt="{{ like.sptid }}" class="like_avatar">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!--这是评论的内容-->
                     <ul>
                         {% for comment in comments %}
                             {% if post.essayid == comment.essayid %}
@@ -56,7 +67,7 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
-                    </ul><!--这是评论的内容-->
+                    </ul>
                     </li>
                     {% endfor %}
                 </ul><!--这是遍历每条朋友圈-->
