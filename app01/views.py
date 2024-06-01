@@ -1,5 +1,5 @@
+import hashlib
 import os
-
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from datetime import datetime
@@ -9,12 +9,13 @@ from app01.models import *
 from django.db.models import Q, Max
 from django.http import JsonResponse
 from django.db import connection
-
+from gmssl import sm3
 from worldfriend import settings
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .decorators import custom_login_required
+import pytz
 
 
 # 添加用户
@@ -159,14 +160,16 @@ def change_pwd(request):
                 cursor.callproc('UpdatePwd', [name, pwd_now, pwd_new])
                 result = cursor.fetchall()
                 message = result[0][0]  # 提取存储过程返回的消息
-                if message == 'Password updated successfully.':
+                if message == '密码更新成功':
+                    clear_session(request)
                     messages.success(request, '修改成功，请重新登录！')
+                    request.session.flush()
                     return redirect('login')  # 密码修改成功，重定向到登录页或其他适当的页面
                 # 如果未发生重定向，说明密码修改失败
                 messages.error(request, "密码修改失败！")
                 return redirect('change_pwd')  # 密码修改失败，重定向回密码修改页面
             except Exception as e:
-                messages.error(request, "密码修改失败1！")
+                messages.error(request, "修改失败！")
                 return redirect('change_pwd')
     return render(request, 'change_pwd.html')
 
@@ -186,7 +189,9 @@ def login(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['name']
+            print(username)
             password = form.cleaned_data['pwd']
+            print(password)
             vcode = form.cleaned_data['vcode']
             vcode_key = form.cleaned_data['hashkey']
             # 验证查询数据库生成正确的码
@@ -201,6 +206,9 @@ def login(request):
                     # 设置会话信息
                     request.session['user_id'] = user.id
                     request.session['name'] = user.name
+                    pwd = bytes(password, 'utf-8')
+                    list1 = [i for i in pwd]
+                    request.session['pwd'] = sm3.sm3_hash(list1)
                     return redirect('index/')  # 重定向到主页
                 else:
                     messages.error(request, '密码不正确！')
@@ -219,15 +227,14 @@ def login(request):
     return render(request, 'login.html', {'form': form, 'hashkey': hashkey, 'imgage_url': imgage_url})
 
 
+def clear_session(request):
+    request.session.flush()
+
+
 def logout(request):
     # Check if the user is logged in
-    if 'user_id' in request.session:
-        request.session.flush()
-        messages.success(request, '您已成功登出！')
-        return redirect('login')
-    else:
-        messages.error(request, '登出失败')
-        return redirect('add_essay')
+    clear_session(request)
+    return redirect('login')
 
 
 # 导航
@@ -265,7 +272,7 @@ def search_user(request):
     if query:
         # 调用存储过程查询用户
         with connection.cursor() as cursor:
-            cursor.callproc('GetUserById', [query])
+            cursor.callproc('GetUser', [query])
             results = cursor.fetchall()
 
         # 将查询结果组装成字典列表
@@ -466,7 +473,7 @@ def essay_center(request):
                   {'posts': posts, 'supports': supports, 'comments': comments})
 
 
-def add_comment(request):
+'''def add_comment(request):
     if request.method == 'POST':
         user = User.objects.get(id=request.session.get('user_id'))
         post_id = request.POST.get('post_id')
@@ -483,4 +490,68 @@ def add_comment(request):
         # 返回新评论的用户名和文本内容
         return JsonResponse({'username': comment.userid.name, 'text': comment.text, 'saytime': comment.saytime.strftime('%Y-%m-%d %H:%M:%S')})
 
+    return redirect('essay_center')'''
+
+
+def add_comment(request):
+    if request.method == 'POST':
+        user = User.objects.get(id=request.session.get('user_id'))
+        post_id = request.POST.get('post_id')
+        comment_text = request.POST.get('comment_text')
+
+        # 获取最大 textid 并生成下一个 textid
+        max_textid = Comments.objects.aggregate(Max('textid'))['textid__max']
+        next_textid = '2' + str(int(max_textid[1:]) + 1).zfill(8)
+
+        # 获取当前时间，并确保包含时区信息
+        current_time = datetime.now(pytz.timezone('Asia/Shanghai'))  # 根据你的时区调整
+
+        # 调用存储过程添加评论
+        with connection.cursor() as cursor:
+            cursor.callproc('AddComment', [post_id, comment_text, user.id, next_textid, current_time])
+
+        # 获取新评论的信息
+        comment = Comments.objects.get(textid=next_textid)
+
+        # 返回新评论的用户名和文本内容
+        return JsonResponse({'username': comment.userid.name, 'text': comment.text,
+                             'saytime': comment.saytime.strftime('%Y-%m-%d %H:%M:%S')})
+
     return redirect('essay_center')
+
+
+def add_support(request):
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        # 假设已经从请求中获取了当前用户和相关信息
+        user_id = request.session.get('user_id')
+        user = User.objects.get(id=user_id)
+        max_spt = Support.objects.aggregate(Max('sptid'))['sptid__max']
+        next_spt = '3' + str(int(max_spt[1:]) + 1).zfill(8)
+        current_time = datetime.now(pytz.timezone('Asia/Shanghai'))
+        # 将点赞记录插入数据库
+        exists = Support.objects.filter(essayid=post_id, omnerid=user.id).exists()
+        if not exists:
+            with connection.cursor() as cursor:
+                cursor.execute("CALL insert_support(%s, %s, %s, %s)", [user_id, post_id, next_spt, current_time])
+            return JsonResponse({'avatar': user.avatar})
+        else:
+            Support.objects.filter(essayid=post_id, omnerid=user.id).delete()
+            print(1)
+            return JsonResponse({'avatar': "delete"})
+    else:
+        return redirect('essay_center')
+
+
+def del_essay(request):
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        print(post_id)
+        try:
+            Whosays.objects.get(essayid=post_id).delete()
+            return JsonResponse({'statu': 'success'})
+        except Whosays.DoesNotExist:
+            return JsonResponse({'statu': 'failed', 'error': 'Post not found'})
+    else:
+        return redirect('homepage')
+

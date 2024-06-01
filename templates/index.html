@@ -12,6 +12,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/roll.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/index_daoh.css' %}">
     <script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <style>
+        
+    </style>
 </head>
 <body>
 
@@ -24,7 +27,11 @@
             </li>
         </ul>
     </div>
-    <a>test</a>
+    <div class="vertical-text">
+        <a href="#">我们都在</a>
+        <a href="#">这世界的</a>
+        <a href="#">某个角落</a>
+    </div>
 </div>
 <div class="news-scroll">
   <ul class="roll">
@@ -54,28 +61,28 @@
                 '修改密码': '/change_pwd'},
         },
         {
-            title: 'null1',
+            title: '朋友圈',
             subtitle: {
                 '我的朋友圈': '/homepage', 
-                '别人的中心': '/essay_center',
-                '三级菜单': '/adduser',
-                '修改密码': '4984651'},
+                '看看大家': '/essay_center',
+                '发表朋友圈': '/add_essay',},
         },
         {
-            title: 'null2',
+            title: '在这查询',
             subtitle: {
-                'zheshi1':'/adduser',
-                'zheshi1':'/adduser',
-                'zheshi1':'/adduser',
-                'zheshi1':'/adduser',
+                '找朋友':'/search_user',
+                '查询朋友圈':'/search_essay',
+                '查询评论':'/search_comments',
+                '不查询':'/homepage',
             }
         },
         {
-            title: 'null3',
+            title: '联系我们',
             subtitle: {
-                'zheshi1':'/adduser',
-                'zheshi1':'/adduser',
-                'zheshi1':'/adduser',
+                '没想好呢':'/adduser',
+                '留个言吧':'/adduser',
+                '混两个字':'/adduser',
+                '这也混吧':'/adduser',
             }
         },
     ]

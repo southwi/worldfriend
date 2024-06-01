@@ -2,6 +2,7 @@
 * {
     margin: 0;
     padding: 0;
+
 }
 /*引入字体图标*/
 @font-face {font-family: "iconfont";
@@ -19,12 +20,26 @@
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
 }
+
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: url('../../static/img/index.png') no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+        }
 /*表单样式设置*/
 #demo {
     display: block;
     width: 600px;
     min-height: 300px;
-    background: #fff;
+    background: rgba(99, 198, 190, 0.41);
     box-shadow: 0 4px 20px 0 #ddd;
     margin: 0 auto;
     margin-top: 30px;

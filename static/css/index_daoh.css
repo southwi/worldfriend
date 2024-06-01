@@ -379,3 +379,20 @@
         .p3 span{
             transform: rotate(12deg);
         }
+        .vertical-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: bold;
+            font-style: italic;
+            font-family: 'Brush Script MT', cursive; /* 艺术字体 */
+            font-size: 36px; /* 偏大的字号 */
+            text-shadow: -12px 12px 7px rgb(136 254 205); /* 文字阴影 */
+            margin: 500px 0 25px 30px; /* 增加左右间距 */
+        }
+
+        .vertical-text a {
+            color: #fff; /* 白色文本 */
+            text-decoration: none; /* 去掉下划线 */
+            margin: 5px 0; /* 增加每行之间的间距 */
+        }

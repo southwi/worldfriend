@@ -9,10 +9,7 @@
 </head>
 <body>
 <button class="button-custom" onclick="rtn_index()">返回主页</button>
-<form id="logout-form" action="{% url 'logout' %}" method="post" style="display: inline;">
-    {% csrf_token %}
-    <button type="submit" class="button-custom">登出</button>
-</form>
+<button type="submit" class="button-custom" onclick="{% url 'logout' %}">登出</button>
 
     <h1>发表朋友圈</h1>
         <form id="demo" autocomplete="off" method="post" enctype="multipart/form-data">

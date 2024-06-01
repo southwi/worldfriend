@@ -6,8 +6,6 @@ a {
 body {
   font-family: 'Arial', sans-serif;
   color: #fff; /* 全局文本颜色设置为白色 */
-  background: url("../../static/img/bg1.jpg") no-repeat center center fixed;
-  background-size: cover; /* 背景图片覆盖整个页面 */
 }
 
 .news-scroll {

@@ -4,6 +4,12 @@ body {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            background: url("../../static/img/essay_bak.png") no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
         }
         h1 {
             text-align: center;
@@ -12,7 +18,7 @@ body {
         form {
             max-width: 600px;
             margin: 20px auto;
-            background-color: #fff;
+            background-color: #89c7be96;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

@@ -79,6 +79,9 @@ TEMPLATES = [
     },
 ]
 
+USE_TZ = True
+TIME_ZONE = 'Asia/Shanghai'
+
 WSGI_APPLICATION = 'worldfriend.wsgi.application'
 
 

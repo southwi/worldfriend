@@ -37,4 +37,6 @@ urlpatterns = [
     path('', logout, name='logout'),
     path('essay_center/', essay_center, name='essay_center'),
     path('add_comment/', add_comment, name='add_comment'),
+    path('add_support', add_support, name='add_support'),
+    path('del_essay/', del_essay, name='del_essay'),
 ]

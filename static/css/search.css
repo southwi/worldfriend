@@ -6,8 +6,15 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 10px 200px;
+    margin: 0;
+    box-sizing: border-box;
+    background: url('../../static/img/index.png') no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
 }
-
 h1 {
     color: #2F4F4F;
     margin-bottom: 20px;
@@ -22,17 +29,18 @@ button {
 }
 
 button {
-    background-color: #32CD32;
+    background-color: rgb(36, 83, 248);
     color: #fff;
     cursor: pointer;
     border: none;
 }
 
 button:hover {
-    background-color: #228B22;
+    background-color: rgb(39, 58, 177);
 }
 
 #results {
+    background-color: rgba(101, 234, 184, 0.42);
     margin-top: 20px;
     width: 100%;
     border-collapse: collapse;
@@ -46,6 +54,6 @@ button:hover {
 }
 
 #results th {
-    background-color: #32CD32;
+    background-color: rgba(68, 255, 232, 0.66);
     color: white;
 }

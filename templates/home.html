@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ user.name }}的个人主页</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
     <div class="container">
@@ -32,49 +35,72 @@
                 <h2>发布过的帖子：</h2>
                 <ul>
                     {% for post in posts %}
-                    <li class="post">
-                    <p>
-                        <img width="25" height="25" src="{% static 'img/' %}{{ user.avatar }}" style="border-radius: 50%;" alt="{{ user.name }}">
-                        <a class="avatar_name">{{ user.name }}</a>
-                    </p> 
-                    <p class="main_text">{{ post.text }}</p>
-                    {% if post.pictureway %}
-                        <img  style="max-width: 300px;" src="{% static 'img/' %}{{ post.pictureway }}" alt="{{ post.text }}">
-                    {% endif %}
-                    <p class="time">发布时间：{{ post.saytime }}</p>
-                    <!--以下是点赞部分-->
-                    <div>
-                        <div class="like_list">
-                            <img width="25" height="25" src="{% static 'img/spt.jpg' %}" alt="spt" class="like_icon">
-                            {% for like in likes %}
-                                {% if like.essayid == post.essayid %}
-                                    <img width="25" height="25" src="{% static 'img/' %}{{ like.omnerid.avatar }}" alt="{{ like.sptid }}" class="like_avatar">
+                    <li class="post" id="essay-post-{{ post.essayid }}">
+                        <p>
+                            <img width="25" height="25" src="{% static 'img/' %}{{ user.avatar }}" style="border-radius: 50%;" alt="{{ user.name }}">
+                            <a class="avatar_name">{{ user.name }}</a>
+                        </p> 
+                        <p class="main_text">{{ post.text }}</p>
+                        {% if post.pictureway %}
+                            <img  style="max-width: 300px;" src="{% static 'img/' %}{{ post.pictureway }}" alt="{{ post.text }}">
+                        {% endif %}
+                        <p class="time">发布时间：{{ post.saytime }}</p>
+                        <div>
+                            <div class="like_list">
+                                <img width="25" height="25" src="{% static 'img/spt.jpg' %}" alt="spt" class="like_icon">
+                                {% for like in likes %}
+                                    {% if like.essayid == post.essayid %}
+                                        <img width="25" height="25" src="{% static 'img/' %}{{ like.omnerid.avatar }}" alt="{{ like.sptid }}" class="like_avatar">
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <ul>
+                            {% for comment in comments %}
+                                {% if post.essayid == comment.essayid %}
+                                    <div class="comments">
+                                        {% for userx in users %}
+                                            {% if comment.userid_id == userx.id %}
+                                                <p class="comment_name">{{ userx.name }}:</p>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <p class="comment">{{ comment.text }}</p>
+                                    </div>
                                 {% endif %}
                             {% endfor %}
+                        </ul>
+                        <form id="essay-delete-{{ post.essayid }}" method="post">
+                            {% csrf_token %}
+                            <button type="button" class="button" onclick="confirmDelete({{ post.essayid }})">删除</button>
+                        </form>
+                        <div id="dialog-confirm" title="确认删除？" style="display:none;">
+                            <p>确定要删除动态吗？</p>
                         </div>
-                    </div>
-                    <!--这是评论的内容-->
-                    <ul>
-                        {% for comment in comments %}
-                            {% if post.essayid == comment.essayid %}
-                                <div class="comments">
-                                    {% for userx in users %}
-                                        {% if comment.userid_id == userx.id %}
-                                            <p class="comment_name">{{ userx.name }}:</p>
-                                        {% endif %}
-                                    {% endfor %}
-                                    <p class="comment">{{ comment.text }}</p>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
                     </li>
                     {% endfor %}
-                </ul><!--这是遍历每条朋友圈-->
+                </ul>
             </div>
         </div>
     </div>
+
 <script>
+    function confirmDelete(postId) {
+        $( "#dialog-confirm" ).dialog({
+            resizable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            buttons: {
+                "确定": function() {
+                    $( this ).dialog( "close" );
+                    DelEssay(postId);
+                },
+                "取消": function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+    }
     function change_pwd(){
         location.href='/change_pwd';
     }
@@ -90,6 +116,35 @@
     function rtn_index() {
         location.href='/index'
     }
+function DelEssay(postId) {
+    var form = $('#essay-delete-' + postId);
+    var postData = form.serialize();
+    postData += '&post_id=' + encodeURIComponent(postId);
+
+    console.log("Post Data: ", postData);  // 调试信息
+
+    $.ajax({
+        type: 'POST',
+        url: '{% url "del_essay" %}',
+        data: postData,
+        success: function(data) {
+            if (data.statu === 'success') {
+                // 动态删除HTML页面中相应post的部分
+                $('#essay-post-' + postId).remove();
+            } else {
+                console.log('Failed to delete the post');
+            }
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            console.log('发生错误：' + errorThrown);
+        }
+    });
+}
 </script>
+<style>
+.ui-dialog-titlebar {
+    cursor: move;
+}
+</style>
 </body>
 </html>

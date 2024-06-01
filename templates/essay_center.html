@@ -12,11 +12,9 @@
 <body>
     <div class="container">
         <div class="buttons">
-            <button onclick="rtn_index()">返回导航目录</button>
-            <button onclick="change_msg()">修改个人信息</button>
-            <button onclick="change_pwd()">修改密码</button>
-            <button onclick="remove_user()">删除账户</button>
-            <button onclick="add_essay()">发表朋友圈</button>
+            <button onclick="rtn_index()">导航目录</button>
+            <button onclick="rtn_home()">个人中心</button>
+            <button onclick="rtn_essay()">我也发表</button>
         </div>
         <div class="main-content">
         <div class="profile">
@@ -38,15 +36,18 @@
                     <p class="time">发布时间：{{ post.saytime }}</p>
                     
                     <!--以下是点赞部分-->
-                    <div>
-                        <div class="like_list">
-                            <img width="25" height="25" src="{% static 'img/spt.jpg' %}" alt="spt" class="like_icon">
+                    <div class="like_list">
+                        <form id="support-form-{{ post.essayid }}" method="post" data-post-id="{{ post.essayid_id }}">
+                            {% csrf_token %}
+                            <img width="25" height="25" src="{% static 'img/spt.jpg' %}" alt="spt" class="like_icon" onclick="submitSupport('{{ post.essayid }}')">
+                        </form>
+                        <form  id="supports_container_{{ post.essayid }}">
                             {% for like in supports %}
                                 {% if like.essayid == post.essayid %}
-                                    <img width="25" height="25" src="{% static 'img/' %}{{ like.omnerid.avatar }}" alt="{{ like.sptid }}" class="like_avatar">
+                                    <img width="25" height="25" src="{% static 'img/' %}{{ like.omnerid.avatar }}" alt="{{ like.sptid }}" class="like_avatar" data-post-id="{{ post.essayid }}">
                                 {% endif %}
                             {% endfor %}
-                        </div>
+                        </form>
                     </div>
                     
                     <!--这是添加评论功能-->
@@ -71,7 +72,6 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
-                        
                     </li>
                     {% endfor %}
                 </ul><!--这是遍历每条朋友圈-->
@@ -85,11 +85,11 @@
         function remove_user() {
             location.href='/removeuser';
         }
-        function change_msg() {
-            location.href='/change_message';
+        function rtn_essay() {
+            location.href='/add_essay';
         }
-        function add_essay() {
-            location.href='/add_essay'
+        function rtn_home() {
+            location.href='/homepage'
         }
         function rtn_index() {
             location.href='/index'
@@ -124,6 +124,33 @@ function submitComment(postId) {
         }
     });
 }
+function submitSupport(postId) {
+    var form = $('#support-form-' + postId);
+    var postData = form.serialize();
+    postData += '&post_id=' + encodeURIComponent(postId);
+
+    console.log("Post Data: ", postData);  // 用于调试，确保postData正确
+    $.ajax({
+        type: 'POST',
+        url: '{% url "add_support" %}',
+        data: postData,
+        success: function(data) {
+            // 在页面上添加新评论
+            if(data.avatar !== 'delete'){
+                var avatar = data.avatar;
+                var newSupportHtml = 
+                    '<img width="25" height="25" src="{% static 'img/' %}' + avatar + '" alt="{{ like.sptid }}" class="like_avatar" data-post-id="' + postId + '">';
+                $('#supports_container_' + postId).append(newSupportHtml);
+            }else{
+                $('#supports_container_' + postId + ' img[data-post-id="' + postId + '"]').remove();
+            }
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            console.log('发生错误：' + errorThrown);
+        }
+    });
+}
+
 
     </script>
 </body>
