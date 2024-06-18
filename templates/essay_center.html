@@ -20,7 +20,7 @@
         <div class="profile">
             </div>
             <div class="posts">
-                <h2>发布过的帖子：</h2>
+                <h2>大家的动态:</h2>
                 <ul>  
                     {% for post in posts %}
                     <!--这里是每个朋友圈的主体-->
@@ -41,13 +41,15 @@
                             {% csrf_token %}
                             <img width="25" height="25" src="{% static 'img/spt.jpg' %}" alt="spt" class="like_icon" onclick="submitSupport('{{ post.essayid }}')">
                         </form>
-                        <form  id="supports_container_{{ post.essayid }}">
-                            {% for like in supports %}
-                                {% if like.essayid == post.essayid %}
-                                    <img width="25" height="25" src="{% static 'img/' %}{{ like.omnerid.avatar }}" alt="{{ like.sptid }}" class="like_avatar" data-post-id="{{ post.essayid }}">
-                                {% endif %}
-                            {% endfor %}
-                        </form>
+                        
+                        {% for like in supports %}
+                            {% if like.essayid == post.essayid %}
+                                <form  id="supports_container_{{ post.essayid }}">
+                                    <img width="25" height="25" src="{% static 'img/' %}{{ like.omnerid.avatar }}" alt="{{ like.sptid }}" class="like_avatar" data-post-id="{{ like.omnerid.id }}">
+                                </form>
+                            {% endif %}
+                        {% endfor %}
+                        
                     </div>
                     
                     <!--这是添加评论功能-->
@@ -139,10 +141,10 @@ function submitSupport(postId) {
             if(data.avatar !== 'delete'){
                 var avatar = data.avatar;
                 var newSupportHtml = 
-                    '<img width="25" height="25" src="{% static 'img/' %}' + avatar + '" alt="{{ like.sptid }}" class="like_avatar" data-post-id="' + postId + '">';
+                    '<img width="25" height="25" src="{% static 'img/' %}' + avatar + '" alt="{{ like.sptid }}" class="like_avatar" data-post-id="' + data.ses_id + '">';
                 $('#supports_container_' + postId).append(newSupportHtml);
             }else{
-                $('#supports_container_' + postId + ' img[data-post-id="' + postId + '"]').remove();
+                $('#supports_container_' + postId + ' img[data-post-id="' + data.ses_id + '"]').remove();
             }
         },
         error: function(xhr, textStatus, errorThrown) {

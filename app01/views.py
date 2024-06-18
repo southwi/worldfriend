@@ -534,11 +534,13 @@ def add_support(request):
         if not exists:
             with connection.cursor() as cursor:
                 cursor.execute("CALL insert_support(%s, %s, %s, %s)", [user_id, post_id, next_spt, current_time])
-            return JsonResponse({'avatar': user.avatar})
+            return JsonResponse({'avatar': user.avatar, 'ses_id': user.id})
         else:
-            Support.objects.filter(essayid=post_id, omnerid=user.id).delete()
+            Support.objects.get(essayid=post_id, omnerid=user.id).delete()
             print(1)
-            return JsonResponse({'avatar': "delete"})
+            print(user_id)
+            print(user.id)
+            return JsonResponse({'avatar': "delete", 'ses_id': user.id})
     else:
         return redirect('essay_center')
 
@@ -554,4 +556,3 @@ def del_essay(request):
             return JsonResponse({'statu': 'failed', 'error': 'Post not found'})
     else:
         return redirect('homepage')
-
