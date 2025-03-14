@@ -21,24 +21,45 @@ WorldFriend 是一个基于 Django 框架开发的社交平台，模拟了微信
 ## 项目结构
 
 worldfriend/
+
 │
+
 ├── worldfriend/          # 主项目目录
+
 │   ├── __init__.py
+
 │   ├── settings.py       # 配置文件
+
 │   ├── urls.py           # 路由配置
+
 │   └── wsgi.py
+
 │
+
 ├── social/               # 应用目录，处理朋友圈逻辑
+
 │   ├── __init__.py
+
 │   ├── admin.py          # 管理后台
+
 │   ├── models.py         # 数据模型
+
 │   ├── views.py          # 视图
+
 │   ├── forms.py          # 表单
+
 │   └── urls.py           # 应用路由配置
+
 │
+
 ├── static/                # 静态文件目录 (CSS, JS, 图片)
+
 │
+
 ├── templates/             # HTML 模板
+
 │
+
 ├── db.sqlite3             # SQLite 数据库文件
+
 └── manage.py              # 管理工具脚本
