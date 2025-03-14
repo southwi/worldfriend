@@ -36,7 +36,6 @@ worldfriend/
 
 │
 
-├── social/               # 应用目录，处理朋友圈逻辑
 
 │   ├── __init__.py
 
@@ -60,6 +59,6 @@ worldfriend/
 
 │
 
-├── db.sqlite3             # SQLite 数据库文件
+├── sql.sql             # MYSQL 数据库文件
 
 └── manage.py              # 管理工具脚本
